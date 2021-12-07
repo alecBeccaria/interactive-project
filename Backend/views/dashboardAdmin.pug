@@ -9,20 +9,14 @@ block content
         h2=`Hello, ${user.username}. Ready to Administrate?'
         table(class='gridtable')
         tr
-            th Id
             th Name
-            th Age
-            th Species
             th
             th
         each item in people
             tr
                 td
-                    a(href='/details/' + item._id) #{item._id}
-                td #{item.name}
-                td #{item.age}
-                td #{item.species}
+                    a(href='/details/' + item.username) #{item.username}
                 td 
-                    a(href='/edit/' + item._id) Edit
+                    a(href='/edit/' + item.username) Edit
                 td
-                    a(href='/delete/' + item._id) Delete
+                    a(href='/delete/' + item.username) Delete

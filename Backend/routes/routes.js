@@ -84,11 +84,11 @@ exports.addUser = async (req, res) =>{
             saltHash: hash,
             isAdmin: false
         });
+        client.close();
     }
     else {
         alert("User already exists in database. Please use a different name.")
     }
-
     res.redirect("/")
 }
 
