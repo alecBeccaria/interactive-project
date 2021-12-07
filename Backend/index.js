@@ -46,6 +46,7 @@ app.get("/login", routes.logIn);
 app.post("/login", urlEncodedParser, routes.logInAction);
 app.get("/testAll", routes.getAllData);
 app.get("/dashboard", checkOff, routes.dashboard);
+app.get("/dashboardAdmin", checkOff, routes.dashboardAdmin);
 app.post("/dashboard/:id", urlEncodedParser, routes.changeAnswer);
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {

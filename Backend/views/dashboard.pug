@@ -2,13 +2,15 @@ extends layout
 
 block content
     ul(id="navbar")
+        if (user.isAdmin == true)
+            li(class="floater")
+                a(href="/dashboardAdmin") Admin Data
         li(class="floater")     
             a(href="/logout") Log Out
     div(id="content")
         h2=`Hello, ${user[0].username}`
         h3 #{data}
 
-        
         form(action="/dashboard/" + user[0]._id, method="post")
             label(for="q1") What is you favourite food? 
             select(name="q1")
