@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    ul(id="navbar")
+        li(class="floater")     
+            a(href="/dashboard")
+            a(href="/logout") Log Out
+    div(id="content")
+        h2=`Hello, ${user.username}. Ready to Administrate?'
+        table(class='gridtable')
+        tr
+            th Name
+            th
+            th
+        each item in people
+            tr
+                td
+                    a(href='/details/' + item.username) #{item.username}
+                td 
+                    a(href='/edit/' + item.username) Edit
+                td
+                    a(href='/delete/' + item.username) Delete

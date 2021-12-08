@@ -77,14 +77,20 @@ exports.addUser = async (req, res) =>{
         {question: 'How many languages do you know?', answer: req.body.q3}
     ]
     await client.connect();
-    const addUser = userCollection.insertOne({
-        username: req.body.username,
-        password: req.body.password,
-        questions: questions,
-        saltHash: hash
-
-    });
-
+    const findUser = await userCollection.findOne({username: req.body.username});
+    if (findUser === undefined) {
+        const addUser = userCollection.insertOne({
+            username: req.body.username,
+            password: req.body.password,
+            questions: questions,
+            saltHash: hash,
+            isAdmin: false
+        });
+        client.close();
+    }
+    else {
+        alert("User already exists in database. Please use a different name.")
+    }
     res.redirect("/")
 }
 
@@ -104,38 +110,59 @@ exports.logIn = (request, response) => {
 
 exports.logInAction = async (req, res) => {
     await client.connect();
-    const userResults = await userCollection.find({username: req.body.username}).toArray()
+    const userResults = await userCollection.findOne({username: req.body.username});
     client.close();
 
     console.log(userResults)
-    console.log(userResults[0].password)
+    console.log(userResults.password)
     console.log(req.body.password)
 
-
-
-    if(bcrypt.compareSync(req.body.password, userResults[0].saltHash)){
+    if(bcrypt.compareSync(req.body.password, userResults.saltHash)){
+        req.session.user = {
+            isAuthenticated: true,
+            username: req.body.username
+        }
         if(req.cookies.beenHereBefore == 'yes') {
             visited++;
             res.cookie('visited', visited, {maxAge: 9999999999});
             let myString = `${month} ${day}, ${year}`;
             res.cookie('stuff', myString, {maxAge: 9999999999});
-            res.render("dashboard",{
-                title: "Dashboard",
-                user: userResults,
+            if (userResults.isAdmin == false) {
+                res.render("dashboard",{
+                    title: "Dashboard",
+                    user: userResults,
+                    data: `Welcome back. Last time you were on this site: ${req.cookies.stuff}. `
+                });
+            }
+            else {
+                const allUsers = userCollection.find({}).toArray();
+                res.render("dashboardAdmin",{
+                    title: "Dashboard",
+                    people: allUsers
+                });
+            }
                 
-                data: `Welcome back. Last time you were on this site: ${req.cookies.stuff}. `
-            });
         }
         else {
             res.cookie('beenHereBefore', 'yes', {maxAge: 9999999999});
             visited = 1;
             res.cookie('visited', visited, {maxAge: 9999999999});
             res.cookie('stuff', myString, {maxAge: 9999999999});
-            res.render("dashboard",{
-                title: "Dashboard",
-                user: userResults,
-                data: "Welcome new user!"
-            });
+            if (userResults.isAdmin == false) {
+                res.render("dashboard",{
+                    title: "Dashboard",
+                    user: userResults,
+                    data: "Welcome new user!"
+                });
+            }
+            else {
+                const allUsers = userCollection.find({}).toArray();
+                res.render("dashboardAdmin",{
+                    title: "Dashboard",
+                    user: userResults,
+                    people: allUsers
+                });
+            }
         }  
     }else{
         res.redirect("login")
@@ -147,22 +174,70 @@ exports.signUpAction = async (req, res) => {
     const addUser = client.insertOne({
         username: req.body.username,
         password: req.body.password,
-        saltHash: req.body.hash
+        saltHash: req.body.hash,
+        isAdmin: false
     });
-    const userResults = userCollection.find({username: req.body.username});
-    client.close();
-    res.render("dashboard",{
-        title: "Dashboard",
-        user: userResults,
-        data: "Welcome new user!"
-    });
+    const findUser = await userCollection.findOne({username: req.body.username});
+    if (findUser === undefined) {
+        const insertResult = await userCollection.insertOne(addUser);
+        client.close();
+        req.session.user = {
+            isAuthenticated: true,
+            username: req.body.username
+        }
+        res.render("dashboard",{
+            title: "Dashboard",
+            user: userResults,
+            data: "Welcome new user!"
+        });
+    }
+    else {
+        client.close();
+        alert("Could not create an account. Please use a different username.");
+
+        res.redirect("signup")
+    }
 }
 
 exports.dashboard = async (req, res) => {
     await client.connect();
-    const userResult = await collection.findOne(req.body._id);
+    const userResults = await userCollection.findOne({req.session.user.username});
     client.close();
-    //if(userResult.password == req.body.password == 'pass123') {
+
+    if(req.cookies.beenHereBefore == 'yes') {
+        visited++;
+        res.cookie('visited', visited, {maxAge: 9999999999});
+        let myString = `${month} ${day}, ${year}`;
+        res.cookie('stuff', myString, {maxAge: 9999999999});
+        res.render("dashboard",{
+            title: "Dashboard",
+            user: userResults,
+            data: `Welcome back. Last time you were on this site: ${req.cookies.stuff}. `
+        }); 
+    }
+    else {
+        res.cookie('beenHereBefore', 'yes', {maxAge: 9999999999});
+        visited = 1;
+        res.cookie('visited', visited, {maxAge: 9999999999});
+        res.cookie('stuff', myString, {maxAge: 9999999999});
+        res.render("dashboard",{
+            title: "Dashboard",
+            user: userResults,
+            data: "Welcome new user!"
+        });
+    }  
+}
+
+exports.dashboardAdmin = async (req, res) => {
+    client.connect();
+    const allUsers = userCollection.find({}).toArray();
+    const userResults = await userCollection.findOne({req.session.user.username});
+    client.close();
+    res.render("dashboardAdmin",{
+        title: "Dashboard",
+        user: userResults,
+        people: allUsers
+    });
 }
 
 exports.changeAnswer = async (req, res) => {

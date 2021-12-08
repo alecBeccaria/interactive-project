@@ -31,6 +31,12 @@ const checkOff = (req, res, next) =>{
     }
 }
 
+app.use((req,res,next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
 app.use(cookieParser('whatever'));
 
 const cors = (req, res, next) => {
@@ -49,6 +55,7 @@ app.get("/login", routes.logIn);
 app.post("/login", urlEncodedParser, routes.logInAction);
 app.get("/testAll", routes.getAllData);
 app.get("/dashboard", checkOff, routes.dashboard);
+app.get("/dashboardAdmin", checkOff, routes.dashboardAdmin);
 app.post("/dashboard/:id", urlEncodedParser, routes.changeAnswer);
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
