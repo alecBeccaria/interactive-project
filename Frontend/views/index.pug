@@ -23,6 +23,18 @@ html(lang="en")
                 text-align: center;
             }
 
+            #chartDescriptions{
+                margin: auto;
+                width: 90%;
+                text-align:center;
+            }
+
+            .chartDesc{
+                display: inline-block;
+                font-family: Arial;
+                color: #FFFFFF;
+                padding: 0px 10px 0px 10px;
+            }
 
     body(class="body")
         canvas(id="canvas", class="centered")
@@ -86,6 +98,8 @@ html(lang="en")
             drawPieChart(600, 200, 50, parsedData.q3Color)
     
 
+            count = 0
+
             function tableKeys (data) {
                 var tableDiv = document.getElementById("tableDiv");
                 var table = document.createElement('TABLE');
@@ -103,6 +117,8 @@ html(lang="en")
                         console.log(data[i][0]);
                         console.log(data[i][1])
 
+                        
+                        
                         th.appendChild(document.createTextNode(data[i][2] + " "))
                         th.appendChild(document.createTextNode(data[i][0] + " "))
                         th.appendChild(document.createTextNode(data[i][1]))
@@ -124,5 +140,7 @@ html(lang="en")
 
 
             //console.log(data);
-
-
+        div(id="chartDescriptions")
+            div(id="chart1" class="chartDesc") Chart 1: Favorite foods
+            div(id="chart2" class="chartDesc") Chart 2: Preferred Mascot 
+            div(id="chart3" class="chartDesc") Chart 3: Known languages

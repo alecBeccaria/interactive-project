@@ -58,18 +58,23 @@ block content
                     question3 = document.getElementById("q3")
                     isAdmin = document.getElementsByName("admin")
                     enterPass = document.getElementById("enterPass")
+                    
 
                     for(let i = 0; i < isAdmin.length; i++){
+                        console.log(isAdmin[i].value)
                         if(isAdmin[i].checked && isAdmin[i].value === "true"){
                             checked = true
+                            break;
                         }else{
                             checked = false
                         }
                     }
 
-                    console.log(checked)
-                    console.log(password.value)
-                    console.log(enterPass)
+                    
+
+                    //console.log(checked)
+                    //console.log(password.value)
+                    //console.log(enterPass)
 
                     if(password.value.length !== 0){
                         enterPass.innerHTML = ""
