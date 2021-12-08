@@ -60,8 +60,10 @@ block content
                     enterPass = document.getElementById("enterPass")
 
                     for(let i = 0; i < isAdmin.length; i++){
-                        if(isAdmin[i].checked){
-                            checked = isAdmin[i].value
+                        if(isAdmin[i].checked && isAdmin[i].value === "true"){
+                            checked = true
+                        }else{
+                            checked = false
                         }
                     }
 

@@ -1,8 +1,8 @@
 const {MongoClient, ObjectId} = require('mongodb');
 const bcrypt = require('bcryptjs');
 
-//const url = `mongodb+srv://abecc:tortilla@cluster0.mpjye.mongodb.net/myData?retryWrites=true&w=majority`;
-const url = "mongodb://localhost:27017/"
+const url = `mongodb+srv://abecc:tortilla@cluster0.mpjye.mongodb.net/myData?retryWrites=true&w=majority`;
+//const url = "mongodb://localhost:27017/"
 
 
 const client =  new MongoClient(url);
@@ -250,7 +250,7 @@ exports.dashboard = async (req, res) => {
 }
 
 exports.dashboardAdmin = async (req, res) => {
-    client.connect();
+    await client.connect();
     const allUsers = await userCollection.find({}).toArray();
     const userResults = await userCollection.findOne({username: req.session.user.username});
     client.close();

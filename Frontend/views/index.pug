@@ -5,8 +5,6 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Document
-    body 
-        canvas(id="canvas", class="centered")
         style. 
             .centered {
                 position: fixed;
@@ -15,7 +13,13 @@ html(lang="en")
                 /* bring your own prefixes */
                 transform: translate(-50%, -50%);
             }
-        
+            .body{
+                background-color: #333333;
+            }
+
+
+    body(class="body")
+        canvas(id="canvas", class="centered")
         div(id="tableDiv")
 
         script.
@@ -94,8 +98,8 @@ html(lang="en")
                         th.appendChild(document.createTextNode(data[i][2] + " "))
                         th.appendChild(document.createTextNode(data[i][0] + " "))
                         th.appendChild(document.createTextNode(data[i][1]))
-                        th.style.backgroundColor = data[i][1]
-                        th.style.color = "#FFFFFF"
+                        th.style.color = data[i][1]
+                        th.style.backgroundColor = "#333333"
 
                         tr.appendChild(th);
                         tableBody.appendChild(tr);
