@@ -201,7 +201,7 @@ exports.signUpAction = async (req, res) => {
 
 exports.dashboard = async (req, res) => {
     await client.connect();
-    const userResults = await userCollection.findOne({req.session.user.username});
+    const userResults = await userCollection.findOne({username: req.session.user.username});
     client.close();
 
     if(req.cookies.beenHereBefore == 'yes') {
@@ -231,7 +231,7 @@ exports.dashboard = async (req, res) => {
 exports.dashboardAdmin = async (req, res) => {
     client.connect();
     const allUsers = userCollection.find({}).toArray();
-    const userResults = await userCollection.findOne({req.session.user.username});
+    const userResults = await userCollection.findOne({username: req.session.user.username});
     client.close();
     res.render("dashboardAdmin",{
         title: "Dashboard",
