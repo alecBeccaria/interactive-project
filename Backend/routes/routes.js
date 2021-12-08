@@ -1,7 +1,9 @@
 const {MongoClient, ObjectId} = require('mongodb');
 const bcrypt = require('bcryptjs');
 
-const url = `mongodb+srv://abecc:tortilla@cluster0.mpjye.mongodb.net/myData?retryWrites=true&w=majority`;
+//const url = `mongodb+srv://abecc:tortilla@cluster0.mpjye.mongodb.net/myData?retryWrites=true&w=majority`;
+const url = "mongodb://localhost:27017/"
+
 
 const client =  new MongoClient(url);
 
@@ -189,6 +191,9 @@ exports.api = async (req,res) => {
     await client.connect();
     const totalUsers = await userCollection.find().count();
     const userResults = await userCollection.find({}).toArray();
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Headers", "*")
+
     let question1Answers = [0, 0, 0, 0];
     let question2Answers = [0, 0 ,0];
     let question3Answers = [0, 0, 0, 0];

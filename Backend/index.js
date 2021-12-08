@@ -5,6 +5,7 @@ const express = require('express'),
     expressSession = require('express-session'),
     bcrypt = require('bcryptjs'),
     cookieParser = require('cookie-parser');
+const { dirname } = require('path');
 
     const app = express();
 
@@ -32,7 +33,15 @@ const checkOff = (req, res, next) =>{
 
 app.use(cookieParser('whatever'));
 
-app.get("/api", routes.api);
+const cors = (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'); //Origin, X-Requested-With, Content-Type, Accept
+    next();
+};
+
+
+
+app.get("/api",cors, routes.api);
 app.get("/", routes.home);
 app.get("/signup", routes.signUp);
 app.post("/signup", urlEncodedParser, routes.addUser);
