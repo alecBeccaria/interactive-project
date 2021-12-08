@@ -410,7 +410,7 @@ exports.delete = async (req, res) => {
 }
 
 exports.confirmDelete = async (req, res) =>{
-    client.connect()
+    await client.connect()
     const deleteResult = await userCollection.deleteOne({_id:ObjectId(req.params.id)})
     client.close()
     console.log("user deleted " + req.params.id)

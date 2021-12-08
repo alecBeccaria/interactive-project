@@ -17,6 +17,12 @@ html(lang="en")
                 background-color: #333333;
             }
 
+            #tableDiv{
+                margin: auto;
+                width: 90%;
+                text-align: center;
+            }
+
 
     body(class="body")
         canvas(id="canvas", class="centered")
@@ -75,9 +81,9 @@ html(lang="en")
                 }
             }
 
-            drawPieChart(100, 200, 50, parsedData.q1Color)
-            drawPieChart(250, 200, 50, parsedData.q2Color)
-            drawPieChart(400, 200, 50, parsedData.q3Color)
+            drawPieChart(200, 200, 50, parsedData.q1Color)
+            drawPieChart(400, 200, 50, parsedData.q2Color)
+            drawPieChart(600, 200, 50, parsedData.q3Color)
     
 
             function tableKeys (data) {
@@ -85,6 +91,8 @@ html(lang="en")
                 var table = document.createElement('TABLE');
                 var tableBody = document.createElement('TBODY');
 
+                table.style.display = "inline-block"
+                table.style.margin = "auto"
                 table.appendChild(tableBody);        
 
                     for(i = 0; i < data.length; i++){
@@ -99,7 +107,9 @@ html(lang="en")
                         th.appendChild(document.createTextNode(data[i][0] + " "))
                         th.appendChild(document.createTextNode(data[i][1]))
                         th.style.color = data[i][1]
-                        th.style.backgroundColor = "#333333"
+                        th.style.backgroundColor = "#444444"
+                        th.style.fontFamily = "Arial"
+                        th.style.border = "2px solid #555555"
 
                         tr.appendChild(th);
                         tableBody.appendChild(tr);
