@@ -35,6 +35,15 @@ const checkOff = (req, res, next) =>{
     }
 }
 
+const checkOffAdmin = (req, res, next) =>{
+    if(req.session.user && req.session.user.isAuthenticated && req.session.user.isAdmin){
+        next();
+    } else{
+        res.redirect('/dashboard')
+    }
+}
+
+
 app.use((req,res,next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -59,7 +68,7 @@ app.get("/login", routes.logIn);
 app.post("/login", urlEncodedParser, routes.logInAction);
 app.get("/testAll", routes.getAllData);
 app.get("/dashboard", checkOff, routes.dashboard);
-app.get("/dashboardAdmin", checkOff, routes.dashboardAdmin);
+app.get("/dashboardAdmin", checkOffAdmin, routes.dashboardAdmin);
 app.post("/dashboard/:id", urlEncodedParser, routes.changeAnswer);
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
@@ -71,8 +80,10 @@ app.get('/logout', (req, res) => {
         }
     });
 });
-app.get("/edit/:username/", checkOff, routes.edit)
+app.get("/edit/:username", checkOffAdmin, routes.edit)
 app.post("/edit/:id", jsonEncodedParser, routes.editUpdate)
+app.get("/delete/:username", checkOffAdmin, routes.delete)
+app.post("/deleteUser/:id", checkOffAdmin, routes.confirmDelete)
 
 
 app.listen(3000);

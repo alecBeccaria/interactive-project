@@ -2,9 +2,10 @@ extends layout
 
 block content
     ul(id="navbar")
-        if (user.isAdmin == true)
-            li(class="floater")
-                a(href="/dashboardAdmin") Admin Data
+        if (user.hasOwnProperty("isAdmin"))
+            if(user.isAdmin == true)
+                li(class="floater")
+                    a(href="/dashboardAdmin") Admin Data
         li(class="floater")     
             a(href="/logout") Log Out
     div(id="content")

@@ -78,8 +78,10 @@ exports.addUser = async (req, res) =>{
     ]
     await client.connect();
     const findUser = await userCollection.findOne({username: req.body.username});
-    if (findUser === undefined) {
-        const addUser = userCollection.insertOne({
+    console.log(findUser)
+
+    if (findUser === undefined || findUser === null) {
+        const addUser = await userCollection.insertOne({
             username: req.body.username,
             password: req.body.password,
             questions: questions,
@@ -89,7 +91,9 @@ exports.addUser = async (req, res) =>{
         client.close();
     }
     else {
-        alert("User already exists in database. Please use a different name.")
+        //can't use alerts from the backend.
+        console.log("User already exists in database. Please use a different name.")
+        res.redirect("/signup")
     }
     res.redirect("/")
 }
@@ -139,6 +143,11 @@ exports.logInAction = async (req, res) => {
                 });
             }
             else {
+                req.session.user = {
+                    isAuthenticated: true,
+                    username: req.body.username,
+                    isAdmin: true
+                }
                 const allUsers = await userCollection.find({}).toArray();
                 res.render("dashboardAdmin",{
                     title: "Dashboard",
@@ -162,6 +171,11 @@ exports.logInAction = async (req, res) => {
                 });
             }
             else {
+                req.session.user = {
+                    isAuthenticated: true,
+                    username: req.body.username,
+                    isAdmin: true
+                }
                 const allUsers = await userCollection.find().toArray();
                 res.render("dashboardAdmin",{
                     title: "Dashboard",
@@ -385,3 +399,21 @@ exports.editUpdate = async (req, res) =>{
     res.redirect("/dashboardAdmin")
 }
 
+exports.delete = async (req, res) => {
+    client.connect()
+    console.log(req.params.username)
+    const deleteResult = await userCollection.findOne({username:req.params.username})
+    client.close()
+    res.render("delete", {
+        user: deleteResult
+    })
+}
+
+exports.confirmDelete = async (req, res) =>{
+    client.connect()
+    const deleteResult = await userCollection.deleteOne({_id:ObjectId(req.params.id)})
+    client.close()
+    console.log("user deleted " + req.params.id)
+
+    res.redirect("/dashboardAdmin")
+}

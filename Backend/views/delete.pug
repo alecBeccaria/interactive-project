@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    ul(id="navbar")
+            li(class="floater")
+                a(href="/dashboardAdmin") Admin Data
+            li(class="floater")
+                a(href="/logout") Log Out
+    div(id="formContent")
+        form(action="/deleteUser/" + user._id, method="POST") 
+            h1 Are you sure you want to delete !{user.username}? They will be removed entirely from the database.
+            p Username: !{user.username}
+            input(type="submit", value="Delete user")
+    
