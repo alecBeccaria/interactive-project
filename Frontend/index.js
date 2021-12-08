@@ -8,6 +8,8 @@ app.set("view engine","pug")
 
 app.get("/", routes.index)
 
+app.get("/rawdata", routes.rawdata)
+
 app.get("/randomcolor", (req, res)=>{
     res.sendFile(__dirname + "/randomcolor.js")
 })
@@ -15,6 +17,8 @@ app.get("/randomcolor", (req, res)=>{
 app.get("/script.js", (req,res)=>{
     res.sendFile(__dirname + "/script.js")
 })
+
+
 
 
 app.listen(3305)

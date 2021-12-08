@@ -15,8 +15,8 @@ html(lang="en")
                 /* bring your own prefixes */
                 transform: translate(-50%, -50%);
             }
-
-        h1=parseData.q1Color
+        
+        div(id="tableDiv")
 
         script.
 
@@ -72,6 +72,42 @@ html(lang="en")
             }
 
             drawPieChart(100, 200, 50, parsedData.q1Color)
+            drawPieChart(250, 200, 50, parsedData.q2Color)
+            drawPieChart(400, 200, 50, parsedData.q3Color)
+    
+
+            function tableKeys (data) {
+                var tableDiv = document.getElementById("tableDiv");
+                var table = document.createElement('TABLE');
+                var tableBody = document.createElement('TBODY');
+
+                table.appendChild(tableBody);        
+
+                    for(i = 0; i < data.length; i++){
+                        var tr = document.createElement('TR')
+                        var th = document.createElement('TD')
+                        console.log(data[i]);
+
+                        console.log(data[i][0]);
+                        console.log(data[i][1])
+
+                        th.appendChild(document.createTextNode(data[i][2] + " "))
+                        th.appendChild(document.createTextNode(data[i][0] + " "))
+                        th.appendChild(document.createTextNode(data[i][1]))
+                        th.style.backgroundColor = data[i][1]
+                        th.style.color = "#FFFFFF"
+
+                        tr.appendChild(th);
+                        tableBody.appendChild(tr);
+                    }
+
+                    tableDiv.appendChild(table);
+            }
+
+            tableKeys(parsedData.q1Color)
+            tableKeys(parsedData.q2Color)
+            tableKeys(parsedData.q3Color)
+
 
             //console.log(data);
 
