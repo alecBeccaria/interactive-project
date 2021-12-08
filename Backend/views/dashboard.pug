@@ -8,13 +8,13 @@ block content
         li(class="floater")     
             a(href="/logout") Log Out
     div(id="content")
-        h2=`Hello, ${user[0].username}`
+        h2=`Hello, ${user.username}`
         h3 #{data}
 
-        form(action="/dashboard/" + user[0]._id, method="post")
+        form(action="/dashboard/" + user._id, method="post")
             label(for="q1") What is you favourite food? 
             select(name="q1")
-                option(selected=user[0].questions[0]["answer"])=user[0].questions[0]["answer"]
+                option(selected=user.questions[0]["answer"])=user.questions[0]["answer"]
                 option(value="pizza") Pizza
                 option(value="hotdog") Hotdogs
                 option(value="hamurger") Hamburgers
@@ -22,14 +22,14 @@ block content
             br
             label(for="q2") Which mascot do you prefer? 
             select(name="q2")
-                option(selected=user[0].questions[1]["answer"])=user[0].questions[1]["answer"]
+                option(selected=user.questions[1]["answer"])=user.questions[1]["answer"]
                 option(value="smokey") Smokey Bear
                 option(value="woodsy") Woodsy Owl
                 option(value="mcgruff") McGruff the Crime Dog
             br
             label(for="q3") How many languages do you know?
             select(name="q3")
-                option(selected=user[0].questions[2]["answer"])=user[0].questions[2]["answer"]
+                option(selected=user.questions[2]["answer"])=user.questions[2]["answer"]
                 option(value="1") 1
                 option(value="2") 2
                 option(value="3") 3

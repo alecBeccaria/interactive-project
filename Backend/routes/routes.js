@@ -123,11 +123,15 @@ exports.logInAction = async (req, res) => {
             username: req.body.username
         }
         if(req.cookies.beenHereBefore == 'yes') {
+            await client.connect();
+            console.log(userResults)
+            
+            
             visited++;
             res.cookie('visited', visited, {maxAge: 9999999999});
             let myString = `${month} ${day}, ${year}`;
             res.cookie('stuff', myString, {maxAge: 9999999999});
-            if (userResults.isAdmin == false) {
+            if (userResults.isAdmin == false || userResults.isAdmin == undefined ) {
                 res.render("dashboard",{
                     title: "Dashboard",
                     user: userResults,
@@ -135,15 +139,17 @@ exports.logInAction = async (req, res) => {
                 });
             }
             else {
-                const allUsers = userCollection.find({}).toArray();
+                const allUsers = await userCollection.find({}).toArray();
                 res.render("dashboardAdmin",{
                     title: "Dashboard",
+                    user: userResults,
                     people: allUsers
                 });
             }
                 
         }
         else {
+            await client.connect();
             res.cookie('beenHereBefore', 'yes', {maxAge: 9999999999});
             visited = 1;
             res.cookie('visited', visited, {maxAge: 9999999999});
@@ -156,7 +162,7 @@ exports.logInAction = async (req, res) => {
                 });
             }
             else {
-                const allUsers = userCollection.find({}).toArray();
+                const allUsers = await userCollection.find().toArray();
                 res.render("dashboardAdmin",{
                     title: "Dashboard",
                     user: userResults,
@@ -169,6 +175,7 @@ exports.logInAction = async (req, res) => {
     }
 }
 
+//Is this deprecated? saltHash should not be part of the requestbody
 exports.signUpAction = async (req, res) => {
     await client.connect();
     const addUser = client.insertOne({
@@ -230,7 +237,7 @@ exports.dashboard = async (req, res) => {
 
 exports.dashboardAdmin = async (req, res) => {
     client.connect();
-    const allUsers = userCollection.find({}).toArray();
+    const allUsers = await userCollection.find({}).toArray();
     const userResults = await userCollection.findOne({username: req.session.user.username});
     client.close();
     res.render("dashboardAdmin",{
@@ -336,3 +343,45 @@ exports.api = async (req,res) => {
 
     res.json({question1Answers, question2Answers, question3Answers})
 }
+
+exports.edit = async (req, res) => {
+    await client.connect()
+    const editUserResult = await userCollection.findOne({username:req.params.username})
+    client.close()
+
+    console.log(editUserResult)
+    
+    res.render("edit",{
+        person: editUserResult
+    })
+}
+
+exports.editUpdate = async (req, res) =>{
+    await client.connect()
+
+    console.log(req.body)
+
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync(req.body.password, salt);
+
+
+
+    questionList = [
+        {question: 'What is you favourite food?', answer: req.body.q1},
+        {question: 'Which mascot do you prefer?', answer: req.body.q2},
+        {question: 'How many languages do you know?', answer: req.body.q3}
+    ]
+
+    console.log(questionList)
+
+    const editUserResult = await userCollection.updateOne({_id:ObjectId(req.params.id)},{$set:{
+        username: req.body.username,
+        password: req.body.password,
+        questions: questionList,
+        saltHash: hash,
+        isAdmin: req.body.isAdmin
+    }})
+    client.close()
+    res.redirect("/dashboardAdmin")
+}
+

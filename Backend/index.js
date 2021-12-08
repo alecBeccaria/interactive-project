@@ -17,6 +17,10 @@ const urlEncodedParser = express.urlencoded({
     extended: false
 });
 
+const jsonEncodedParser = express.json({
+
+})
+
 app.use(expressSession({
     secret: 'whatever',
     saveUnitialized: true,
@@ -67,5 +71,8 @@ app.get('/logout', (req, res) => {
         }
     });
 });
+app.get("/edit/:username/", checkOff, routes.edit)
+app.post("/edit/:id", jsonEncodedParser, routes.editUpdate)
+
 
 app.listen(3000);

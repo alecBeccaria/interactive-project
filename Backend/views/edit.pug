@@ -1,0 +1,94 @@
+extends layout
+
+block content
+    ul(id="navbar")
+        if (user == true)
+            li(class="floater")
+                a(href="/dashboardAdmin") Admin Data
+        li(class="floater")     
+            a(href="/logout") Log Out
+    div(id="formContent")
+        form
+            input(type="text", name="username", id="username", placeholder=person.username, value=person.username)
+            br
+            input(type="password", name="password", id="password", placeholder="Password")
+            br
+            label(for="q1") Answer for food:
+            select(name="q1", id="q1")
+                option(value=person.questions[0].answer)=person.questions[0].answer
+                option(value="pizza") Pizza
+                option(value="hotdog") Hotdogs
+                option(value="hamurger") Hamburgers
+                option(value="other") Other
+            br
+            label(for="q2") Answer for mascot:
+            select(name="q2", id="q2")
+                option(value=person.questions[1].answer)=person.questions[1].answer
+                option(value="smokey") Smokey Bear
+                option(value="woodsy") Woodsy Owl
+                option(value="mcgruff") McGruff the Crime Dog
+            br
+            label(for="q3") Answer for languages:
+            select(name="q3", id="q3")
+                option(value=person.questions[2].answers)=person.questions[2].answer
+                option(value="1") 1
+                option(value="2") 2
+                option(value="3") 3
+                option(value="4") 4+
+            br
+            //Never do something like this outside of a test environment.
+            div Is the user an admin?
+            input(type="radio", name="admin", id="true", value="true")
+            label(for="true") Yes
+            input(type="radio", name="admin", id="false", value="false", checked)
+            label(for="false") No
+            br
+            button(type="button", onclick="onClick('"+person._id+"')", id="update") Update
+
+
+
+            script.
+                async function onClick(id){
+                    url = "http://localhost:3000/edit/" + id
+                    console.log(url)
+                    username = document.getElementById("username")
+                    password = document.getElementById("password")
+                    question1 = document.getElementById("q1")
+                    question2 = document.getElementById("q2")
+                    question3 = document.getElementById("q3")
+                    isAdmin = document.getElementsByName("admin")
+                    enterPass = document.getElementById("enterPass")
+
+                    for(let i = 0; i < isAdmin.length; i++){
+                        if(isAdmin[i].checked){
+                            checked = isAdmin[i].value
+                        }
+                    }
+
+                    console.log(checked)
+                    console.log(password.value)
+                    console.log(enterPass)
+
+                    if(password.value.length !== 0){
+                        enterPass.innerHTML = ""
+                        const response = await fetch(url, {
+                        method: "POST",
+                        mode: 'same-origin',
+                        headers: {
+                            'Content-Type':'application/json'
+                        },
+                        redirect: 'follow',
+                        body: JSON.stringify({"username": username.value, "password": password.value, "q1": question1.value, 
+                                            "q2":question2.value, "q3":question3.value, "isAdmin": checked})
+                        })
+                        
+                        console.log(response)
+                        window.location.href = response.url;
+
+                    }else{
+                        enterPass.innerHTML = "You've left password blank, gotta fix that first."
+                    }
+                    
+                }
+        br
+        div(id="enterPass")
